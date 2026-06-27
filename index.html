@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escape Party 3.0 – Party Locker Games</title>
+  <style>
+    /* ── CONFIGURATION: update CHALLENGE_4_CODE below if you have a 4th challenge code ── */
+
+    :root {
+      --primary: #1a1a2e;
+      --accent: #c0392b;
+      --accent-light: #e74c3c;
+      --gold: #f39c12;
+      --bg: #f5f5f0;
+      --card-bg: #ffffff;
+      --success: #27ae60;
+      --text: #2c2c2c;
+      --muted: #666;
+      --border: #ddd;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--primary);
+      width: 100%;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-wrap img {
+      max-height: 80px;
+      max-width: 220px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .logo-fallback {
+      text-align: center;
+      line-height: 1.1;
+    }
+    .logo-fallback .brand-name {
+      font-family: 'Courier New', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 2px;
+    }
+    .logo-fallback .brand-games {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      letter-spacing: 6px;
+    }
+    .logo-wrap img.hidden { display: none; }
+
+    .game-title {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-bar-wrap {
+      width: 100%;
+      max-width: 540px;
+      padding: 16px 16px 0;
+    }
+    .progress-label {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .progress-track {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+
+    /* ── MAIN CARD ── */
+    main {
+      width: 100%;
+      max-width: 540px;
+      padding: 20px 16px 40px;
+      flex: 1;
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 32px 28px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .step-badge.challenge {
+      background: var(--accent);
+    }
+
+    .step-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .step-instruction {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .step-instruction strong {
+      color: var(--text);
+    }
+
+    /* ── INPUT ── */
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .answer-input {
+      flex: 1;
+      padding: 14px 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+      color: var(--primary);
+      background: #fafafa;
+    }
+
+    .answer-input:focus {
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    .answer-input.shake {
+      animation: shake 0.4s ease;
+      border-color: var(--accent);
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-8px); }
+      40%       { transform: translateX(8px); }
+      60%       { transform: translateX(-6px); }
+      80%       { transform: translateX(6px); }
+    }
+
+    .submit-btn {
+      padding: 14px 22px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+
+    .submit-btn:hover { background: #2d2d4e; }
+    .submit-btn:active { transform: scale(0.97); }
+
+    /* ── ERROR & FEEDBACK ── */
+    .error-msg {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 10px;
+      min-height: 20px;
+    }
+
+    /* ── FEEDBACK (success message shown before advancing) ── */
+    .feedback-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 40px 28px;
+      text-align: center;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .feedback-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .feedback-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .feedback-sub {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .next-btn {
+      display: inline-block;
+      padding: 14px 36px;
+      background: var(--success);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Arial', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .next-btn:hover { background: #219a52; }
+    .next-btn:active { transform: scale(0.97); }
+
+    /* ── FINAL REVEAL ── */
+    .final-card {
+      background: var(--primary);
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+      padding: 44px 28px;
+      text-align: center;
+      color: #fff;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .final-icon { font-size: 3.5rem; margin-bottom: 12px; }
+
+    .final-card h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--gold);
+    }
+
+    .final-card p {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .combo-display {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .combo-digit {
+      width: 72px;
+      height: 88px;
+      background: #fff;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Courier New', monospace;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    .combo-digit:nth-child(1) { animation-delay: 0.2s; }
+    .combo-digit:nth-child(2) { animation-delay: 0.4s; }
+    .combo-digit:nth-child(3) { animation-delay: 0.6s; }
+
+    .final-card .caption {
+      font-family: 'Arial', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 0;
+    }
+
+    /* ── CONFETTI CANVAS ── */
+    #confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 16px;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 420px) {
+      .step-card, .feedback-card, .final-card { padding: 24px 18px; }
+      .combo-digit { width: 60px; height: 74px; font-size: 2.4rem; }
+      .step-title { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<header>
+  <div class="logo-wrap">
+    <!-- Place your logo file (logo.png) in the same folder as this HTML file -->
+    <img src="logo.png" alt="Party Locker Games" onerror="this.classList.add('hidden'); document.getElementById('logo-text').style.display='block'">
+    <div class="logo-fallback" id="logo-text" style="display:none">
+      <div class="brand-name">Party Locker</div>
+      <div class="brand-games">G A M E S</div>
+    </div>
+  </div>
+  <div class="game-title">Escape Party 3.0</div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-label">Progress — <span id="progress-count">0</span> of 13 solved</div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+</div>
+
+<main id="app"></main>
+
+<footer>Party Locker Games &nbsp;·&nbsp; Escape Party 3.0</footer>
+
+<script>
+// ─────────────────────────────────────────────
+//  ANSWER KEY
+//  All text answers are matched case-insensitively.
+//  Challenge codes are numeric strings.
+//  Set CHALLENGE_4_CODE to the correct code, or
+//  leave as null to accept any non-empty entry.
+// ─────────────────────────────────────────────
+const STEPS = [
+  {
+    id: "clue2a",
+    badge: "Clue 2",
+    title: "Clue 2 – First Word",
+    instruction: "Enter the <strong>first word</strong> from Clue 2 (in ALL CAPS).",
+    answer: "TICKET",
+    feedback: { icon: "🔍", text: "Good start. Keep going!", sub: "First word confirmed!" }
+  },
+  {
+    id: "clue2b",
+    badge: "Clue 2",
+    title: "Clue 2 – Second Word",
+    instruction: "Enter the <strong>second word</strong> from Clue 2 (in ALL CAPS).",
+    answer: "TURTLE",
+    feedback: { icon: "✅", text: "Good start. Keep going!", sub: "Both words confirmed!" }
+  },
+  {
+    id: "clue3",
+    badge: "Clue 3",
+    title: "Clue 3",
+    instruction: "Enter the answer to Clue 3.",
+    answer: "517",
+    feedback: { icon: "🗺️", text: "That's it! Keep it up.", sub: "Clue 3 solved!" }
+  },
+  {
+    id: "challenge1",
+    badge: "Challenge 1",
+    isChallenge: true,
+    title: "Challenge 1",
+    instruction: "Complete the challenge, then <strong>ask your game master for the code</strong> and enter it here.",
+    answer: "4609",
+    feedback: { icon: "💪", text: "I'm impressed! You aren't done yet, though.", sub: "Challenge 1 complete!" }
+  },
+  {
+    id: "clue4",
+    badge: "Clue 4",
+    title: "Clue 4",
+    instruction: "Enter the answer to Clue 4 (in ALL CAPS).",
+    answer: "BUTTONS",
+    feedback: { icon: "🔐", text: "Wow!", sub: "Clue 4 solved!" }
+  },
+  {
+    id: "clue5",
+    badge: "Clue 5",
+    title: "Clue 5",
+    instruction: "Enter the answer to Clue 5 (in ALL CAPS).",
+    answer: "REO",
+    feedback: { icon: "🎨", text: "You are getting closer.", sub: "Clue 5 solved!" }
+  },
+  {
+    id: "challenge2",
+    badge: "Challenge 2",
+    isChallenge: true,
+    title: "Challenge 2",
+    instruction: "Complete the challenge, then <strong>ask your game master for the code</strong> and enter it here.",
+    answer: "9198",
+    feedback: { icon: "🎯", text: "Keep going!", sub: "Challenge 2 complete!" }
+  },
+  {
+    id: "clue6",
+    badge: "Clue 6",
+    title: "Clue 6",
+    instruction: "Enter the answer to Clue 6 (in ALL CAPS).",
+    answer: "RGF4AX",
+    feedback: { icon: "🌈", text: "Awesome job!", sub: "Clue 6 solved!" }
+  },
+  {
+    id: "clue7",
+    badge: "Clue 7",
+    title: "Clue 7",
+    instruction: "Enter the answer to Clue 7.",
+    answer: "5278",
+    feedback: { icon: "💧", text: "Woo-hoo!", sub: "Clue 7 solved!" }
+  },
+  {
+    id: "challenge3",
+    badge: "Challenge 3",
+    isChallenge: true,
+    title: "Challenge 3",
+    instruction: "Complete the challenge, then <strong>ask your game master for the code</strong> and enter it here.",
+    answer: "7886",
+    feedback: { icon: "🏆", text: "You are really close now.", sub: "Challenge 3 complete!" }
+  },
+  {
+    id: "clue8",
+    badge: "Clue 8",
+    title: "Clue 8",
+    instruction: "Enter the answer to Clue 8 (in ALL CAPS).",
+    answer: "GER9N",
+    feedback: { icon: "🔎", text: "Almost there!", sub: "Clue 8 solved!" }
+  },
+  {
+    id: "clue9",
+    badge: "Clue 9",
+    title: "Clue 9 – Second Word of the Song",
+    instruction: "Write the <strong>second word of the song</strong> from Clue 9 (in ALL CAPS).",
+    answer: "WHEELS",
+    feedback: { icon: "🎵", text: "You got this!", sub: "Clue 9 solved!" }
+  },
+];
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let currentStep = 0;
+let showingFeedback = false;
+
+const app = document.getElementById("app");
+const progressFill = document.getElementById("progress-fill");
+const progressCount = document.getElementById("progress-count");
+
+function updateProgress(solved) {
+  const pct = Math.round((solved / STEPS.length) * 100);
+  progressFill.style.width = pct + "%";
+  progressCount.textContent = solved;
+}
+
+// ─────────────────────────────────────────────
+//  RENDER FUNCTIONS
+// ─────────────────────────────────────────────
+function renderStep(index) {
+  const step = STEPS[index];
+  showingFeedback = false;
+
+  app.innerHTML = `
+    <div class="step-card">
+      <span class="step-badge ${step.isChallenge ? 'challenge' : ''}">${step.badge}</span>
+      <h2 class="step-title">${step.title}</h2>
+      <p class="step-instruction">${step.instruction}</p>
+      <div class="input-row">
+        <input
+          class="answer-input"
+          id="answer-input"
+          type="text"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          placeholder="${step.isChallenge ? 'Enter code' : 'Your answer'}"
+          maxlength="20"
+        />
+        <button class="submit-btn" id="submit-btn" onclick="checkAnswer()">Submit</button>
+      </div>
+      <div class="error-msg" id="error-msg"></div>
+    </div>
+  `;
+
+  const input = document.getElementById("answer-input");
+  input.focus();
+  input.addEventListener("keydown", e => { if (e.key === "Enter") checkAnswer(); });
+}
+
+function renderFeedback(index) {
+  const { feedback } = STEPS[index];
+  showingFeedback = true;
+
+  app.innerHTML = `
+    <div class="feedback-card">
+      <div class="feedback-icon">${feedback.icon}</div>
+      <div class="feedback-text">${feedback.text}</div>
+      <div class="feedback-sub">${feedback.sub}</div>
+      <button class="next-btn" onclick="advance()">
+        ${index + 1 < STEPS.length ? "Next Clue →" : "Reveal the Prize! 🔓"}
+      </button>
+    </div>
+  `;
+}
+
+function renderFinal() {
+  app.innerHTML = `
+    <div class="final-card">
+      <div class="final-icon">🎉</div>
+      <h2>You cracked the code!</h2>
+      <p>Amazing work! Here is your combination to open the prize chest:</p>
+      <div class="combo-display">
+        <div class="combo-digit">2</div>
+        <div class="combo-digit">6</div>
+        <div class="combo-digit">9</div>
+      </div>
+      <p class="caption">Turn the lock to 2 – 6 – 9</p>
+    </div>
+  `;
+  launchConfetti();
+}
+
+// ─────────────────────────────────────────────
+//  LOGIC
+// ─────────────────────────────────────────────
+function checkAnswer() {
+  const step = STEPS[currentStep];
+  const input = document.getElementById("answer-input");
+  const errorEl = document.getElementById("error-msg");
+  const raw = input.value.trim();
+
+  if (!raw) {
+    errorEl.textContent = "Please enter an answer.";
+    return;
+  }
+
+  // Determine if correct
+  let correct;
+  if (step.answer === null) {
+    // Challenge 4 or any step with no preset answer: accept anything
+    correct = true;
+  } else {
+    correct = raw.toUpperCase() === step.answer.toUpperCase();
+  }
+
+  if (correct) {
+    updateProgress(currentStep + 1);
+    renderFeedback(currentStep);
+  } else {
+    errorEl.textContent = "Not quite — check your answer and try again!";
+    input.classList.remove("shake");
+    void input.offsetWidth; // reflow to restart animation
+    input.classList.add("shake");
+    input.addEventListener("animationend", () => input.classList.remove("shake"), { once: true });
+    input.select();
+  }
+}
+
+function advance() {
+  currentStep++;
+  if (currentStep >= STEPS.length) {
+    renderFinal();
+  } else {
+    renderStep(currentStep);
+  }
+}
+
+// ─────────────────────────────────────────────
+//  CONFETTI
+// ─────────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.getElementById("confetti-canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ["#c0392b","#e74c3c","#f39c12","#2ecc71","#3498db","#9b59b6","#ffffff"];
+  const pieces = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height - canvas.height,
+    r: Math.random() * 6 + 4,
+    d: Math.random() * 80 + 40,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    tilt: Math.random() * 10 - 10,
+    tiltAngle: 0,
+    tiltAngleIncrement: Math.random() * 0.07 + 0.05
+  }));
+
+  let angle = 0;
+  let elapsed = 0;
+  const duration = 4000;
+  const start = performance.now();
+
+  function draw(now) {
+    elapsed = now - start;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    angle += 0.01;
+
+    pieces.forEach(p => {
+      p.tiltAngle += p.tiltAngleIncrement;
+      p.y += (Math.cos(angle + p.d) + 2) * 1.5;
+      p.x += Math.sin(angle);
+      p.tilt = Math.sin(p.tiltAngle) * 12;
+
+      ctx.beginPath();
+      ctx.lineWidth = p.r;
+      ctx.strokeStyle = p.color;
+      ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+      ctx.stroke();
+
+      if (p.y > canvas.height) {
+        p.x = Math.random() * canvas.width;
+        p.y = -20;
+      }
+    });
+
+    if (elapsed < duration) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+updateProgress(0);
+renderStep(0);
+</script>
+</body>
+</html>
