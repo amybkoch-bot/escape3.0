@@ -394,7 +394,7 @@
 </header>
 
 <div class="progress-bar-wrap">
-  <div class="progress-label">Progress — <span id="progress-count">0</span> of 13 solved</div>
+  <div class="progress-label">Progress — <span id="progress-count">0</span> of 14 solved</div>
   <div class="progress-track">
     <div class="progress-fill" id="progress-fill"></div>
   </div>
@@ -414,10 +414,18 @@
 // ─────────────────────────────────────────────
 const STEPS = [
   {
+    id: "clue1",
+    badge: "Clue 1",
+    title: "Clue 1",
+    instruction: "Enter the answer to Clue 1.",
+    answer: "VAULT",
+    feedback: { icon: "🔑", text: "You're off to a great start!", sub: "Clue 1 solved!" }
+  },
+  {
     id: "clue2a",
     badge: "Clue 2",
     title: "Clue 2 – First Word",
-    instruction: "Enter the <strong>first word</strong> from Clue 2 (in ALL CAPS).",
+    instruction: "Enter the <strong>first word</strong> from Clue 2.",
     answer: "TICKET",
     feedback: { icon: "🔍", text: "Good start. Keep going!", sub: "First word confirmed!" }
   },
@@ -425,7 +433,7 @@ const STEPS = [
     id: "clue2b",
     badge: "Clue 2",
     title: "Clue 2 – Second Word",
-    instruction: "Enter the <strong>second word</strong> from Clue 2 (in ALL CAPS).",
+    instruction: "Enter the <strong>second word</strong> from Clue 2.",
     answer: "TURTLE",
     feedback: { icon: "✅", text: "Good start. Keep going!", sub: "Both words confirmed!" }
   },
@@ -450,7 +458,7 @@ const STEPS = [
     id: "clue4",
     badge: "Clue 4",
     title: "Clue 4",
-    instruction: "Enter the answer to Clue 4 (in ALL CAPS).",
+    instruction: "Enter the answer to Clue 4.",
     answer: "BUTTONS",
     feedback: { icon: "🔐", text: "Wow!", sub: "Clue 4 solved!" }
   },
@@ -458,7 +466,7 @@ const STEPS = [
     id: "clue5",
     badge: "Clue 5",
     title: "Clue 5",
-    instruction: "Enter the answer to Clue 5 (in ALL CAPS).",
+    instruction: "Enter the answer to Clue 5.",
     answer: "REO",
     feedback: { icon: "🎨", text: "You are getting closer.", sub: "Clue 5 solved!" }
   },
@@ -475,7 +483,7 @@ const STEPS = [
     id: "clue6",
     badge: "Clue 6",
     title: "Clue 6",
-    instruction: "Enter the answer to Clue 6 (in ALL CAPS).",
+    instruction: "Enter the answer to Clue 6.",
     answer: "RGF4AX",
     feedback: { icon: "🌈", text: "Awesome job!", sub: "Clue 6 solved!" }
   },
@@ -500,7 +508,7 @@ const STEPS = [
     id: "clue8",
     badge: "Clue 8",
     title: "Clue 8",
-    instruction: "Enter the answer to Clue 8 (in ALL CAPS).",
+    instruction: "Enter the answer to Clue 8.",
     answer: "GER9N",
     feedback: { icon: "🔎", text: "Almost there!", sub: "Clue 8 solved!" }
   },
@@ -508,7 +516,7 @@ const STEPS = [
     id: "clue9",
     badge: "Clue 9",
     title: "Clue 9 – Second Word of the Song",
-    instruction: "Write the <strong>second word of the song</strong> from Clue 9 (in ALL CAPS).",
+    instruction: "Write the <strong>second word of the song</strong> from Clue 9.",
     answer: "WHEELS",
     feedback: { icon: "🎵", text: "You got this!", sub: "Clue 9 solved!" }
   },
